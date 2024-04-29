@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - potion
+  - Ball
   layers:
   - Default
   - TransparentFX

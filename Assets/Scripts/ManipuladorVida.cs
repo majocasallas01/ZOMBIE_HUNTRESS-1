@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class ManipuladorVida : MonoBehaviour
 {
-    LogicaBarraVida playerVida;
+    public LogicaBarraVida playerVida;
     public float damageTime;
     float currentDamageTime;
     public float cantidad; // Definición de la cantidad de vida que se suma
 
     void Start()
     {
-        playerVida = GameObject.FindWithTag("Player").GetComponent<LogicaBarraVida>(); // Corrección del tag del jugador
+        //playerVida = GameObject.FindWithTag("Player").GetComponent<LogicaBarraVida>();
+        //Debug.Log(playerVida.name);
+         
     }
 
     private void OnTriggerStay(Collider other)
