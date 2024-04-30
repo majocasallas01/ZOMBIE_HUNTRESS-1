@@ -22,6 +22,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void Morir()
     {
-        Destroy(gameObject, 2f); // Destruir el objeto después de 2 segundos
+        Destroy(gameObject, 1f); // Destruir el objeto después de 2 segundos
     }
+
 }

@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
-
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
- */
 
 namespace StarterAssets
 {
@@ -32,6 +30,9 @@ namespace StarterAssets
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
+        public AudioClip breathingSound; // Sonido de respiración
+        private AudioSource audioSource; // Referencia al componente AudioSource
+
         [Space(10)]
         [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
@@ -47,7 +48,7 @@ namespace StarterAssets
         public float FallTimeout = 0.15f;
 
         [Header("Player Grounded")]
-        [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+        [Tooltip("If the character is grounded or not. Not part of the CharacterController built-in grounded check")]
         public bool Grounded = true;
 
         [Tooltip("Useful for rough ground")]
@@ -69,7 +70,7 @@ namespace StarterAssets
         [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -30.0f;
 
-        [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
+        [Tooltip("Additional degress to override the camera. Useful for fine-tuning camera position when locked")]
         public float CameraAngleOverride = 0.0f;
 
         [Tooltip("For locking the camera position on all axis")]
@@ -123,7 +124,6 @@ namespace StarterAssets
             }
         }
 
-
         private void Awake()
         {
             // get a reference to our main camera
@@ -132,18 +132,18 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
         }
-        
+
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+			Debug.LogError("Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
@@ -155,6 +155,32 @@ namespace StarterAssets
             // Set hasPistol to true and lock the cursor
             hasPistol = true;
             Cursor.lockState = CursorLockMode.Locked;
+
+            // Obtener el componente AudioSource
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                // Agregar un componente AudioSource si no existe
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+
+            // Configurar el AudioSource para que no destruya el clip al finalizar
+            audioSource.playOnAwake = false;
+            audioSource.loop = true;
+            audioSource.clip = breathingSound;
+
+            // Reproducir el sonido de respiración
+            PlayBreathingSound();
+        }
+
+        private void PlayBreathingSound()
+        {
+            if (audioSource != null && breathingSound != null)
+            {
+                // Configurar el volumen y reproducir el sonido de respiración
+                audioSource.volume = 0.5f; // Ajustar el volumen según sea necesario
+                audioSource.Play();
+            }
         }
 
         private void Update()
@@ -233,7 +259,7 @@ namespace StarterAssets
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's == operator uses approximation so is not floating point error-prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -266,7 +292,7 @@ namespace StarterAssets
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's != operator uses approximation so is not floating point error-prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
@@ -405,4 +431,3 @@ namespace StarterAssets
         }
     }
 }
-

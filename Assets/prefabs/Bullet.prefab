@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPower: 20
   lifeTime: 4
+  bulletSound: {fileID: 8300000, guid: c7fa57b296baf074c957cfe82f4b5245, type: 3}
 --- !u!54 &902309903235307999
 Rigidbody:
   m_ObjectHideFlags: 0
